@@ -2,7 +2,15 @@
 
 A small local lab. A service checks that a record's length header matches its body, then builds an `INSERT` by concatenating that body into a SQL string. When the statement fails, the HTTP response includes the PostgreSQL error. That combination is enough to read a value from another table.
 
-The record format, the names and the canary are invented for this lab. The client refuses any host other than localhost.
+The record format, the names and the canary are invented for this lab. The client refuses any host other than localhost. Compose publishes the application only on `127.0.0.1:18080`. The database port stays on the Compose network. `lab` and `app` are the passwords of that local database.
+
+## Demo
+
+One recording, three requests. The first two run in the default mode. The tape then restarts the same service with `LAB_MODE=safe` and repeats the payload.
+
+![Length check, error-based read, and the parameterized fix](docs/demo.gif)
+
+`vhs demos/demo.tape` renders it again. The typed command is `demos/show.py`. The laboratory has to be listening on `127.0.0.1:18080` before the tape starts.
 
 ## What is wrong
 
@@ -74,4 +82,5 @@ On an exposed service, the signal is a valid record of this shape followed by HT
 | `app/schema.sql` | Notes, the demo secret, and the restricted role |
 | `poc/wrap.py` | Length header and `CHR()` folding |
 | `poc/prove.py` | Local checks for the leak and for the fix |
+| `demos/demo.tape` | The GIF in the section above |
 | `tests/test_wrap.py` | Header, byte length, and the length budget |
